@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mie Dinie's 20/10 Ultimate Quest</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #03000b;
+  --panel: rgba(12, 5, 30, 0.85);
+  --pink: #ff2a7a;
+  --cyan: #00ffff;
+  --yellow: #ffd700;
+  --purple: #b551ff;
+  --white: #ffffff;
+  
+  --current-font: 'VT323', monospace;
+  --current-title-font: 'Press Start 2P', cursive;
+  --font-size-dialog: 22px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--white);
+  font-family: var(--current-font);
+  display: flex; justify-content: center; align-items: center;
+}
+
+/* Nền vũ trụ gradient sâu thẳm & Đốm sáng lung linh */
+#world {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background: radial-gradient(circle at 50% 30%, #240b59 0%, #0a021c 50%, #03000b 100%);
+}
+.floating-item {
+  position: absolute; pointer-events: none; z-index: 1;
+  animation: floatUp linear infinite;
+  filter: drop-shadow(0 0 6px rgba(255,255,255,0.6));
+}
+@keyframes floatUp {
+  0% { transform: translateY(105vh) rotate(0deg) scale(0.8); opacity: 0; }
+  30% { opacity: 0.9; }
+  100% { transform: translateY(-60px) rotate(360deg) scale(1.2); opacity: 0; }
+}
+
+/* Khung Game chính dạng Glassmorphism cao cấp */
+#game-container {
+  position: relative;
+  width: min(94vw, 480px);
+  height: min(95vh, 740px);
+  background: var(--panel);
+  border: 2px solid rgba(0, 255, 255, 0.4);
+  box-shadow: 0 0 50px rgba(181, 81, 255, 0.25), inset 0 0 30px rgba(0,0,0,0.8);
+  display: flex; flex-direction: column; justify-content: space-between;
+  padding: 18px; z-index: 2;
+  border-radius: 20px;
+  backdrop-filter: blur(16px);
+}
+
+/* HUD Top Bar */
+.hud {
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: var(--current-title-font); font-size: 8px; color: var(--cyan);
+  border-bottom: 1px solid rgba(181, 81, 255, 0.4); padding-bottom: 10px;
+  text-shadow: 0 0 8px var(--cyan);
+  gap: 4px;
+}
+.hud-controls {
+  display: flex; align-items: center; gap: 6px;
+}
+.hud-btn {
+  cursor: pointer; color: var(--yellow);
+  border: 1px solid var(--yellow); padding: 4px 8px; border-radius: 6px;
+  transition: all 0.2s; background: rgba(255, 215, 0, 0.08);
+  font-family: var(--current-title-font); font-size: 8px;
+}
+.hud-btn:hover { background: rgba(255, 215, 0, 0.25); box-shadow: 0 0 10px var(--yellow); }
+
+/* Thanh kéo Volume */
+.volume-slider {
+  width: 60px;
+  height: 6px;
+  -webkit-appearance: none;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+}
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--yellow);
+  box-shadow: 0 0 6px var(--yellow);
+  cursor: pointer;
+}
+
+/* Thanh tiến trình neon mượt mà */
+.progress-container {
+  width: 100%; height: 5px; background: rgba(255,255,255,0.08);
+  border-radius: 3px; margin-top: 8px; overflow: hidden;
+}
+.progress-bar {
+  height: 100%; width: 10%; background: linear-gradient(90deg, var(--pink), var(--cyan));
+  box-shadow: 0 0 10px var(--cyan); transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Viewport Game */
+#viewport {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  position: relative; margin: 10px 0; text-align: center;
+}
+
+.stage-scene {
+  position: relative; width: 100%; display: flex;
+  flex-direction: column; align-items: center; justify-content: center;
+}
+.character-box {
+  position: relative; width: 110px; height: 110px; margin-bottom: 14px;
+  display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(circle, rgba(181,81,255,0.2) 0%, transparent 70%);
+  border-radius: 50%;
+}
+.pixel-cat {
+  width: 90px; height: 90px;
+  animation: floatCat 1.2s infinite alternate ease-in-out;
+  filter: drop-shadow(0 0 15px var(--pink));
+}
+@keyframes floatCat { 0% { transform: translateY(0); } 100% { transform: translateY(-10px); } }
+
+.side-deco {
+  position: absolute; font-size: 24px; top: 10px;
+  animation: bounceDeco 1.2s infinite alternate;
+}
+.side-deco.left { left: 10px; }
+.side-deco.right { right: 10px; }
+@keyframes bounceDeco { 0% { transform: translateY(0) scale(1); } 100% { transform: translateY(-8px) scale(1.25); } }
+
+/* Style khung ảnh Tác Giả */
+.author-avatar-card {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+}
+.author-img {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--yellow);
+  box-shadow: 0 0 20px var(--yellow), 0 0 10px var(--pink);
+  animation: pulseAvatar 2s infinite alternate;
+}
+@keyframes pulseAvatar {
+  0% { transform: scale(0.95); box-shadow: 0 0 15px var(--yellow); }
+  100% { transform: scale(1.05); box-shadow: 0 0 25px var(--pink); }
+}
+
+/* Hộp thoại cốt truyện sang trọng */
+.dialog-box {
+  background: rgba(5, 2, 15, 0.9);
+  border: 1px solid rgba(255, 42, 122, 0.6);
+  padding: 16px; width: 100%; min-height: 135px;
+  border-radius: 12px; position: relative;
+  box-shadow: 0 0 20px rgba(255, 42, 122, 0.2), inset 0 0 15px rgba(0,0,0,0.9);
+  display: flex; align-items: center; justify-content: center;
+}
+.dialog-text {
+  font-size: var(--font-size-dialog); line-height: 1.45; color: #fff;
+  text-shadow: 0 0 5px rgba(181, 81, 255, 0.5);
+  font-weight: 500;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  width: 100%;
+}
+
+.display-card {
+  margin-top: 12px; width: 100%; min-height: 85px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+
+/* Nút bấm Arcade phong cách Cyberpunk Glow */
+.controls {
+  display: flex; gap: 12px; justify-content: center; width: 100%;
+}
+.btn-arcade {
+  font-family: var(--current-title-font); font-size: 10px;
+  padding: 14px 20px; color: #03000b; background: var(--pink);
+  border: none; border-bottom: 4px solid #a80040; border-right: 4px solid #a80040;
+  cursor: pointer; transition: all 0.1s; text-transform: uppercase;
+  border-radius: 8px; box-shadow: 0 0 15px rgba(255, 42, 122, 0.5);
+  font-weight: bold;
+}
+.btn-arcade:active {
+  transform: translate(2px, 2px);
+  border-bottom-width: 2px; border-right-width: 2px;
+}
+.btn-arcade.alt { background: var(--cyan); border-color: #008b8b; box-shadow: 0 0 15px rgba(0, 255, 255, 0.5); }
+.btn-arcade.yellow { background: var(--yellow); border-color: #b89600; box-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
+
+/* Màn hình mở đầu (Start Screen) */
+#start-screen {
+  position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, #240b59 0%, #03000b 100%);
+  z-index: 10; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 18px; padding: 20px;
+  border-radius: 20px;
+}
+.start-card-wrapper {
+  position: relative; padding: 36px 24px; width: 100%; max-width: 400px;
+  background: rgba(12, 5, 30, 0.92); border: 1px solid rgba(0, 255, 255, 0.5);
+  border-radius: 20px; display: flex; flex-direction: column; align-items: center;
+  box-shadow: 0 0 50px rgba(0, 255, 255, 0.3), inset 0 0 20px rgba(255, 42, 122, 0.2);
+  animation: cardFloat 3s infinite alternate ease-in-out;
+}
+@keyframes cardFloat { 0% { transform: translateY(0); } 100% { transform: translateY(-10px); } }
+
+.gift-box-anim {
+  width: 85px; height: 85px; margin-bottom: 14px;
+  animation: pulseGift 1.2s infinite alternate ease-in-out;
+}
+@keyframes pulseGift { 0% { transform: scale(1); filter: drop-shadow(0 0 8px var(--pink)); } 100% { transform: scale(1.15); filter: drop-shadow(0 0 25px var(--pink)); } }
+
+.start-title {
+  font-family: var(--current-title-font); font-size: 14px; color: var(--pink);
+  text-shadow: 3px 3px #3d001b, 0 0 15px var(--pink); line-height: 1.6; text-align: center;
+  margin-bottom: 8px;
+}
+.start-subtitle {
+  font-size: 18px; color: var(--cyan); letter-spacing: 2px;
+  text-shadow: 0 0 10px var(--cyan); margin-bottom: 18px; font-weight: bold;
+}
+
+.btn-start-epic {
+  font-family: var(--current-title-font); font-size: 11px; padding: 16px 28px;
+  color: #03000b; background: var(--yellow);
+  border: none; border-bottom: 4px solid #b89600; border-right: 4px solid #b89600;
+  cursor: pointer; border-radius: 10px; text-transform: uppercase;
+  animation: epicGlow 1.2s infinite alternate;
+  transition: 0.1s; font-weight: bold;
+}
+.btn-start-epic:active { transform: translate(2px, 2px); border-bottom-width: 2px; border-right-width: 2px; }
+@keyframes epicGlow {
+  0% { box-shadow: 0 0 12px var(--yellow); transform: scale(1); }
+  100% { box-shadow: 0 0 30px var(--yellow), 0 0 50px var(--pink); transform: scale(1.06); }
+}
+
+/* Card Winner */
+.winner-card {
+  background: rgba(5, 2, 15, 0.95); border: 1px solid var(--yellow);
+  padding: 16px; border-radius: 12px; width: 100%;
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.25);
+}
+.winner-title {
+  font-family: var(--current-title-font); font-size: 11px; color: var(--yellow); margin-bottom: 8px;
+  text-shadow: 0 0 10px var(--yellow);
+}
+</style>
+</head>
+<body>
+
+<div id="world"></div>
+
+<!-- Audio nhạc nền YouTube ẩn -->
+<iframe id="youtube-player" style="display:none;" 
+  src="https://www.youtube.com/embed/-4saPpJU8-Y?enablejsapi=1&autoplay=1&loop=1&playlist=-4saPpJU8-Y" 
+  allow="autoplay">
+</iframe>
+
+<div id="game-container">
+  <!-- HUD Header -->
+  <div>
+    <div class="hud">
+      <div>PLAYER: <span style="color:var(--pink)">MIE DINIE</span></div>
+      <div class="hud-controls">
+        <div class="hud-btn" id="music-btn" onclick="toggleMusic()">🎵 ON</div>
+        <input type="range" min="0" max="100" value="50" class="volume-slider" id="volume-slider" oninput="changeVolume(this.value)" title="Volume">
+      </div>
+      <div>STAGE: <span id="stage-num" style="color:var(--yellow)">01</span>/10</div>
+    </div>
+    <div class="progress-container">
+      <div class="progress-bar" id="progress-bar"></div>
+    </div>
+  </div>
+
+  <!-- Viewport Game -->
+  <div id="viewport">
+    <div class="stage-scene">
+      
+      <!-- Nhân vật & Chi tiết trang trí -->
+      <div class="character-box">
+        <div class="side-deco left" id="deco-left">✨</div>
+        <div class="pixel-cat">
+          <svg viewBox="0 0 16 16" width="100%" height="100%" style="shape-rendering: crispEdges;">
+            <path d="M2 2h3v3H2z M11 2h3v3h-3z" fill="#ff2a7a"/>
+            <path d="M1 5h14v8H1z" fill="#ff2a7a"/>
+            <path d="M3 7h3v3H3z M10 7h3v3h-3z" fill="#000"/>
+            <path d="M4 8h1v1H4z M11 8h1v1h-1z" fill="#fff"/>
+            <path d="M7 10h2v1H7z" fill="#ffd700"/>
+            <path d="M2 10h2v1H2z M12 10h2v1h-2z" fill="#ff1453"/>
+            <path d="M7 3h2v2H7z" fill="#00ffff"/>
+          </svg>
+        </div>
+        <div class="side-deco right" id="deco-right">🌸</div>
+      </div>
+
+      <!-- Hộp thoại lời thoại -->
+      <div class="dialog-box">
+        <div id="dialog-text" class="dialog-text">Loading world... =)))</div>
+      </div>
+
+      <!-- Khung hiển thị nội dung bổ sung -->
+      <div id="display-area" class="display-card"></div>
+    </div>
+  </div>
+
+  <!-- Nút điều khiển -->
+  <div class="controls" id="controls">
+    <button class="btn-arcade" id="btn-next" onclick="nextStage()">NEXT [►]</button>
+  </div>
+</div>
+
+<!-- Màn hình mở đầu -->
+<div id="start-screen">
+  <div class="start-card-wrapper">
+    <div class="gift-box-anim">
+      <svg viewBox="0 0 16 16" width="100%" height="100%" style="shape-rendering: crispEdges;">
+        <path d="M2 5h12v10H2z" fill="#ff2a7a"/>
+        <path d="M1 3h14v3H1z" fill="#ff1453"/>
+        <path d="M7 3h2v12H7z" fill="#ffd700"/>
+        <path d="M2 8h12v2H2z" fill="#ffd700"/>
+        <path d="M5 1h2v2H5z M9 1h2v2H9z" fill="#00ffff"/>
+      </svg>
+    </div>
+    <div class="start-title">MIE DINIE'S<br><span style="color:var(--cyan)">20/10 ULTIMATE QUEST</span></div>
+    <div class="start-subtitle">★ PRESS START TO PLAY ★</div>
+    <button class="btn-start-epic" onclick="startGame()">LET'S GOOO ♡</button>
+  </div>
+</div>
+
+<script>
+// Web Audio API hiệu ứng âm thanh phong phú & Tiếng gõ phím
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+const masterGain = audioCtx.createGain();
+masterGain.gain.value = 0.5; // Âm lượng mặc định 50% cho hiệu ứng âm thanh
+masterGain.connect(audioCtx.destination);
+
+function playBeep(freq = 440, type = 'square', duration = 0.08) {
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = type;
+  osc.frequency.value = freq;
+  gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+  osc.connect(gain);
+  gain.connect(masterGain);
+  osc.start();
+  osc.stop(audioCtx.currentTime + duration);
+}
+
+// Âm thanh tiếng gõ phím lách cách (Typewriter Sound)
+function playKeySound() {
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = 'triangle';
+  osc.frequency.setValueAtTime(600 + Math.random() * 300, audioCtx.currentTime);
+  gain.gain.setValueAtTime(0.015, audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.03);
+  osc.connect(gain);
+  gain.connect(masterGain);
+  osc.start();
+  osc.stop(audioCtx.currentTime + 0.03);
+}
+
+// Âm thanh chiến thắng / chuyển đoạn
+function playVictorySound() {
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  const notes = [523.25, 659.25, 783.99, 1046.50];
+  notes.forEach((freq, index) => {
+    setTimeout(() => {
+      playBeep(freq, 'sine', 0.12);
+    }, index * 90);
+  });
+}
+
+// Điều chỉnh âm lượng chung
+function changeVolume(val) {
+  const vol = val / 100;
+  // Chỉnh âm lượng Web Audio (hiệu ứng tiếng gõ phím, beep)
+  masterGain.gain.value = vol;
+  
+  // Chỉnh âm lượng nhạc YouTube qua postMessage API
+  const iframe = document.getElementById('youtube-player');
+  if (iframe && iframe.contentWindow) {
+    iframe.contentWindow.postMessage(
+      JSON.stringify({ event: 'command', func: 'setVolume', args: [val] }), 
+      '*'
+    );
+  }
+}
+
+// Biến quản lý hiệu ứng chữ chạy (Typewriter)
+let typewriterTimer = null;
+function typeWriterEffect(text, elementId, callback) {
+  if (typewriterTimer) clearInterval(typewriterTimer);
+  const el = document.getElementById(elementId);
+  el.innerText = "";
+  let i = 0;
+  
+  typewriterTimer = setInterval(() => {
+    if (i < text.length) {
+      el.innerText += text.charAt(i);
+      if (text.charAt(i) !== ' ') {
+        playKeySound();
+      }
+      i++;
+    } else {
+      clearInterval(typewriterTimer);
+      if (callback) callback();
+    }
+  }, 25);
+}
+
+// Bật / Tắt nhạc nền YouTube
+let musicOn = true;
+function toggleMusic() {
+  const iframe = document.getElementById('youtube-player');
+  const btn = document.getElementById('music-btn');
+  const slider = document.getElementById('volume-slider');
+  if (musicOn) {
+    iframe.src = "";
+    btn.innerText = "🎵 OFF";
+    musicOn = false;
+  } else {
+    const currentVol = slider.value;
+    iframe.src = `https://www.youtube.com/embed/-4saPpJU8-Y?enablejsapi=1&autoplay=1&loop=1&playlist=-4saPpJU8-Y`;
+    btn.innerText = "🎵 ON";
+    musicOn = true;
+  }
+}
+
+// Hiệu ứng hạt nền rơi
+const world = document.getElementById('world');
+const items = ['🌸', '💖', '✨', '🎀', '⭐', '💫', '💎', '🍀'];
+for (let i = 0; i < 35; i++) {
+  let el = document.createElement('div');
+  el.className = 'floating-item';
+  el.innerText = items[Math.floor(Math.random() * items.length)];
+  el.style.left = Math.random() * 100 + 'vw';
+  el.style.fontSize = (Math.random() * 14 + 12) + 'px';
+  el.style.animationDuration = (Math.random() * 4 + 4) + 's';
+  el.style.animationDelay = (Math.random() * 5) + 's';
+  world.appendChild(el);
+}
+
+// Dữ liệu nội dung 10 Stages tiếng Anh teencode
+const stages = [
+  {
+    num: "01", leftDeco: "✨", rightDeco: "🌸",
+    text: "Yo Mie Dinie! Welcome to ur special 20/10 adventure world rn! Let's get it =)))",
+    content: `<div style="font-size: 36px; color: var(--yellow); font-family: var(--current-title-font); text-shadow: 0 0 10px var(--yellow);">OCTOBER 20</div>`
+  },
+  {
+    num: "02", leftDeco: "📜", rightDeco: "💖",
+    text: "Oct 20 is all abt awesome queens out there. And tbh, u r the absolute main character today =)))",
+    content: `<div style="font-size: 18px; color: var(--cyan);">[ STATUS: 🌟 LEGENDARY STAR ]</div>`
+  },
+  {
+    num: "03", leftDeco: "🎁", rightDeco: "🔮",
+    text: "Wait a sec... D'u even know who secretly coded and prepped this whole thing just 4 u? 🤔",
+    content: `<div style="font-size: 20px; color: var(--pink);">🔍 Scanning Secret Author...</div>`
+  },
+  {
+    num: "04", leftDeco: "👑", rightDeco: "⭐",
+    text: "Guess who? EZ, it's lna fr! Bro literally spent hours making this banger for u =)))",
+    content: `
+      <div class="author-avatar-card">
+        <img src="img/lna.png" alt="lna author" class="author-img" onError="this.style.display='none'">
+        <div style="font-size: 18px; color: var(--yellow); font-family: var(--current-title-font);">by lna</div>
+      </div>
+    `
+  },
+  {
+    num: "05", leftDeco: "🔋", rightDeco: "⚡",
+    text: "Buffing u up: 100% positive vibes, zero stress, & max luck 24/7. U got this bestie ✨",
+    content: `<div style="font-size: 18px; color: var(--cyan);">[ HP: 100% | MANA: FULL | LUCK: MAX ]</div>`
+  },
+  {
+    num: "06", leftDeco: "🎯", rightDeco: "💎",
+    text: "Quick check: U are stunning, super smart & absolutely one of a kind. Do u agree or nah? 💅",
+    content: `<div style="font-size: 18px; color: var(--pink);">✨ ACHIEVEMENT UNLOCKED SOON ✨</div>`,
+    question: true
+  },
+  {
+    num: "07", leftDeco: "🌟", rightDeco: "🦄",
+    text: "W choice bestie! Fr tho, ur smile literally hits diff and brightens up the whole room =)))",
+    content: `<div style="font-size: 22px;">💖 🌸 🚀 🌈</div>`
+  },
+  {
+    num: "08", leftDeco: "🎉", rightDeco: "💐",
+    text: "MISSION COMPLETED! Wishing u the best 20/10 ever w/ tons of flowers & good vibes 🎉",
+    final: true
+  },
+  {
+    num: "09", leftDeco: "💌", rightDeco: "💌",
+    text: "May all ur big dreams come true & stay as gorgeous & happy as u are rn, fr fr! 💫",
+    content: `<div style="font-size: 18px; color: var(--yellow);">✨ KEEP SHINING BRIGHT ✨</div>`
+  },
+  {
+    num: "10", leftDeco: "🏆", rightDeco: "🚀",
+    text: "Thx for playing this little game! Stay awesome & have a blessed 20/10, Mie Dinie! Byee =)))",
+    credit: true
+  }
+];
+
+let currentStage = 0;
+
+function startGame() {
+  playVictorySound();
+  document.getElementById('start-screen').style.display = 'none';
+  renderStage();
+}
+
+function renderStage() {
+  const data = stages[currentStage];
+  document.getElementById('stage-num').innerText = data.num;
+  
+  const progressPercent = ((currentStage + 1) / stages.length) * 100;
+  document.getElementById('progress-bar').style.width = progressPercent + '%';
+
+  typeWriterEffect(data.text, 'dialog-text');
+
+  document.getElementById('deco-left').innerText = data.leftDeco;
+  document.getElementById('deco-right').innerText = data.rightDeco;
+  
+  const displayArea = document.getElementById('display-area');
+  const controls = document.getElementById('controls');
+  
+  displayArea.innerHTML = data.content || '';
+
+  if (data.question) {
+    controls.innerHTML = `
+      <button class="btn-arcade" onclick="answerQuestion(true)">TOTALLY AGREE! ♡</button>
+      <button class="btn-arcade alt" onclick="answerQuestion(false)">NAH...</button>
+    `;
+  } else if (data.final) {
+    playVictorySound();
+    displayArea.innerHTML = `
+      <div class="winner-card">
+        <div class="winner-title">🎉 HAPPY 20/10 TO MIE DINIE 🎉</div>
+        <p style="font-size: 16px; line-height: 1.4; color: #fff;">
+          Wishing <b style="color:var(--pink)">Mie Dinie</b> an amazing celebration filled with love and success! =)))
+        </p>
+      </div>
+    `;
+    controls.innerHTML = `<button class="btn-arcade yellow" onclick="nextStage()">READ MORE WISHES [►]</button>`;
+  } else if (data.credit) {
+    playVictorySound();
+    displayArea.innerHTML = `
+      <div class="author-avatar-card">
+        <img src="img/lna.png" alt="lna author" class="author-img" style="width:70px; height:70px;" onError="this.style.display='none'">
+        <div style="font-size: 16px; color: var(--cyan); text-shadow: 1px 1px #000;">
+          Special Thanks to <b>Mie Dinie</b> ✨<br>
+          <span style="color:var(--pink)">Design & Coded by lna =)))</span>
+        </div>
+      </div>
+    `;
+    controls.innerHTML = `<button class="btn-arcade" onclick="replay()">PLAY AGAIN ↺</button>`;
+  } else {
+    controls.innerHTML = `<button class="btn-arcade" onclick="nextStage()">NEXT [►]</button>`;
+  }
+}
+
+function nextStage() {
+  playBeep(500, 'square', 0.08);
+  if (currentStage < stages.length - 1) {
+    currentStage++;
+    renderStage();
+  }
+}
+
+function answerQuestion(isYes) {
+  if(isYes) {
+    playBeep(850, 'square', 0.12);
+    currentStage++;
+    renderStage();
+  } else {
+    playBeep(220, 'square', 0.08);
+    typeWriterEffect("Nice try bestie, but lna locked this choice already! Pick the other button =)))", 'dialog-text');
+  }
+}
+
+function replay() {
+  playBeep(600, 'square', 0.1);
+  currentStage = 0;
+  renderStage();
+}
+
+document.body.addEventListener('click', function() {
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+}, { once: true });
+</script>
+</body>
+</html>
