@@ -14,12 +14,10 @@
   --yellow: #ffd700;
   --purple: #b551ff;
   --white: #ffffff;
-  
   --current-font: 'VT323', monospace;
   --current-title-font: 'Press Start 2P', cursive;
   --font-size-dialog: 22px;
 }
-
 * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
 html, body {
   width: 100%; height: 100%;
@@ -29,8 +27,6 @@ html, body {
   font-family: var(--current-font);
   display: flex; justify-content: center; align-items: center;
 }
-
-/* Nền vũ trụ gradient sâu thẳm & Đốm sáng lung linh */
 #world {
   position: fixed; inset: 0; pointer-events: none; z-index: 0;
   background: radial-gradient(circle at 50% 30%, #240b59 0%, #0a021c 50%, #03000b 100%);
@@ -45,8 +41,6 @@ html, body {
   30% { opacity: 0.9; }
   100% { transform: translateY(-60px) rotate(360deg) scale(1.2); opacity: 0; }
 }
-
-/* Khung Game chính dạng Glassmorphism cao cấp */
 #game-container {
   position: relative;
   width: min(94vw, 480px);
@@ -59,8 +53,6 @@ html, body {
   border-radius: 20px;
   backdrop-filter: blur(16px);
 }
-
-/* HUD Top Bar */
 .hud {
   display: flex; justify-content: space-between; align-items: center;
   font-family: var(--current-title-font); font-size: 8px; color: var(--cyan);
@@ -78,8 +70,6 @@ html, body {
   font-family: var(--current-title-font); font-size: 8px;
 }
 .hud-btn:hover { background: rgba(255, 215, 0, 0.25); box-shadow: 0 0 10px var(--yellow); }
-
-/* Thanh kéo Volume */
 .volume-slider {
   width: 60px;
   height: 6px;
@@ -98,8 +88,6 @@ html, body {
   box-shadow: 0 0 6px var(--yellow);
   cursor: pointer;
 }
-
-/* Thanh tiến trình neon mượt mà */
 .progress-container {
   width: 100%; height: 5px; background: rgba(255,255,255,0.08);
   border-radius: 3px; margin-top: 8px; overflow: hidden;
@@ -108,14 +96,11 @@ html, body {
   height: 100%; width: 10%; background: linear-gradient(90deg, var(--pink), var(--cyan));
   box-shadow: 0 0 10px var(--cyan); transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
-/* Viewport Game */
 #viewport {
   flex: 1; display: flex; flex-direction: column;
   align-items: center; justify-content: center;
   position: relative; margin: 10px 0; text-align: center;
 }
-
 .stage-scene {
   position: relative; width: 100%; display: flex;
   flex-direction: column; align-items: center; justify-content: center;
@@ -132,7 +117,6 @@ html, body {
   filter: drop-shadow(0 0 15px var(--pink));
 }
 @keyframes floatCat { 0% { transform: translateY(0); } 100% { transform: translateY(-10px); } }
-
 .side-deco {
   position: absolute; font-size: 24px; top: 10px;
   animation: bounceDeco 1.2s infinite alternate;
@@ -140,8 +124,6 @@ html, body {
 .side-deco.left { left: 10px; }
 .side-deco.right { right: 10px; }
 @keyframes bounceDeco { 0% { transform: translateY(0) scale(1); } 100% { transform: translateY(-8px) scale(1.25); } }
-
-/* Style khung ảnh Tác Giả */
 .author-avatar-card {
   display: flex; flex-direction: column; align-items: center; gap: 8px;
 }
@@ -157,8 +139,6 @@ html, body {
   0% { transform: scale(0.95); box-shadow: 0 0 15px var(--yellow); }
   100% { transform: scale(1.05); box-shadow: 0 0 25px var(--pink); }
 }
-
-/* Hộp thoại cốt truyện sang trọng */
 .dialog-box {
   background: rgba(5, 2, 15, 0.9);
   border: 1px solid rgba(255, 42, 122, 0.6);
@@ -176,13 +156,10 @@ html, body {
   overflow-wrap: break-word;
   width: 100%;
 }
-
 .display-card {
   margin-top: 12px; width: 100%; min-height: 85px;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
 }
-
-/* Nút bấm Arcade phong cách Cyberpunk Glow */
 .controls {
   display: flex; gap: 12px; justify-content: center; width: 100%;
 }
@@ -200,8 +177,6 @@ html, body {
 }
 .btn-arcade.alt { background: var(--cyan); border-color: #008b8b; box-shadow: 0 0 15px rgba(0, 255, 255, 0.5); }
 .btn-arcade.yellow { background: var(--yellow); border-color: #b89600; box-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
-
-/* Màn hình mở đầu (Start Screen) */
 #start-screen {
   position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, #240b59 0%, #03000b 100%);
   z-index: 10; display: flex; flex-direction: column;
@@ -216,13 +191,11 @@ html, body {
   animation: cardFloat 3s infinite alternate ease-in-out;
 }
 @keyframes cardFloat { 0% { transform: translateY(0); } 100% { transform: translateY(-10px); } }
-
 .gift-box-anim {
   width: 85px; height: 85px; margin-bottom: 14px;
   animation: pulseGift 1.2s infinite alternate ease-in-out;
 }
 @keyframes pulseGift { 0% { transform: scale(1); filter: drop-shadow(0 0 8px var(--pink)); } 100% { transform: scale(1.15); filter: drop-shadow(0 0 25px var(--pink)); } }
-
 .start-title {
   font-family: var(--current-title-font); font-size: 14px; color: var(--pink);
   text-shadow: 3px 3px #3d001b, 0 0 15px var(--pink); line-height: 1.6; text-align: center;
@@ -232,7 +205,6 @@ html, body {
   font-size: 18px; color: var(--cyan); letter-spacing: 2px;
   text-shadow: 0 0 10px var(--cyan); margin-bottom: 18px; font-weight: bold;
 }
-
 .btn-start-epic {
   font-family: var(--current-title-font); font-size: 11px; padding: 16px 28px;
   color: #03000b; background: var(--yellow);
@@ -246,8 +218,6 @@ html, body {
   0% { box-shadow: 0 0 12px var(--yellow); transform: scale(1); }
   100% { box-shadow: 0 0 30px var(--yellow), 0 0 50px var(--pink); transform: scale(1.06); }
 }
-
-/* Card Winner */
 .winner-card {
   background: rgba(5, 2, 15, 0.95); border: 1px solid var(--yellow);
   padding: 16px; border-radius: 12px; width: 100%;
@@ -260,17 +230,12 @@ html, body {
 </style>
 </head>
 <body>
-
 <div id="world"></div>
-
-<!-- Audio nhạc nền YouTube ẩn -->
 <iframe id="youtube-player" style="display:none;" 
   src="https://www.youtube.com/embed/-4saPpJU8-Y?enablejsapi=1&autoplay=1&loop=1&playlist=-4saPpJU8-Y" 
   allow="autoplay">
 </iframe>
-
 <div id="game-container">
-  <!-- HUD Header -->
   <div>
     <div class="hud">
       <div>PLAYER: <span style="color:var(--pink)">MIE DINIE</span></div>
@@ -284,12 +249,8 @@ html, body {
       <div class="progress-bar" id="progress-bar"></div>
     </div>
   </div>
-
-  <!-- Viewport Game -->
   <div id="viewport">
     <div class="stage-scene">
-      
-      <!-- Nhân vật & Chi tiết trang trí -->
       <div class="character-box">
         <div class="side-deco left" id="deco-left">✨</div>
         <div class="pixel-cat">
@@ -305,24 +266,16 @@ html, body {
         </div>
         <div class="side-deco right" id="deco-right">🌸</div>
       </div>
-
-      <!-- Hộp thoại lời thoại -->
       <div class="dialog-box">
         <div id="dialog-text" class="dialog-text">Loading world... =)))</div>
       </div>
-
-      <!-- Khung hiển thị nội dung bổ sung -->
       <div id="display-area" class="display-card"></div>
     </div>
   </div>
-
-  <!-- Nút điều khiển -->
   <div class="controls" id="controls">
     <button class="btn-arcade" id="btn-next" onclick="nextStage()">NEXT [►]</button>
   </div>
 </div>
-
-<!-- Màn hình mở đầu -->
 <div id="start-screen">
   <div class="start-card-wrapper">
     <div class="gift-box-anim">
@@ -339,14 +292,11 @@ html, body {
     <button class="btn-start-epic" onclick="startGame()">LET'S GOOO ♡</button>
   </div>
 </div>
-
 <script>
-// Web Audio API hiệu ứng âm thanh phong phú & Tiếng gõ phím
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 const masterGain = audioCtx.createGain();
-masterGain.gain.value = 0.5; // Âm lượng mặc định 50% cho hiệu ứng âm thanh
+masterGain.gain.value = 0.5; 
 masterGain.connect(audioCtx.destination);
-
 function playBeep(freq = 440, type = 'square', duration = 0.08) {
   if (audioCtx.state === 'suspended') audioCtx.resume();
   const osc = audioCtx.createOscillator();
@@ -360,8 +310,6 @@ function playBeep(freq = 440, type = 'square', duration = 0.08) {
   osc.start();
   osc.stop(audioCtx.currentTime + duration);
 }
-
-// Âm thanh tiếng gõ phím lách cách (Typewriter Sound)
 function playKeySound() {
   if (audioCtx.state === 'suspended') audioCtx.resume();
   const osc = audioCtx.createOscillator();
@@ -375,8 +323,6 @@ function playKeySound() {
   osc.start();
   osc.stop(audioCtx.currentTime + 0.03);
 }
-
-// Âm thanh chiến thắng / chuyển đoạn
 function playVictorySound() {
   if (audioCtx.state === 'suspended') audioCtx.resume();
   const notes = [523.25, 659.25, 783.99, 1046.50];
@@ -386,14 +332,9 @@ function playVictorySound() {
     }, index * 90);
   });
 }
-
-// Điều chỉnh âm lượng chung
 function changeVolume(val) {
   const vol = val / 100;
-  // Chỉnh âm lượng Web Audio (hiệu ứng tiếng gõ phím, beep)
   masterGain.gain.value = vol;
-  
-  // Chỉnh âm lượng nhạc YouTube qua postMessage API
   const iframe = document.getElementById('youtube-player');
   if (iframe && iframe.contentWindow) {
     iframe.contentWindow.postMessage(
@@ -402,15 +343,12 @@ function changeVolume(val) {
     );
   }
 }
-
-// Biến quản lý hiệu ứng chữ chạy (Typewriter)
 let typewriterTimer = null;
 function typeWriterEffect(text, elementId, callback) {
   if (typewriterTimer) clearInterval(typewriterTimer);
   const el = document.getElementById(elementId);
   el.innerText = "";
   let i = 0;
-  
   typewriterTimer = setInterval(() => {
     if (i < text.length) {
       el.innerText += text.charAt(i);
@@ -424,8 +362,6 @@ function typeWriterEffect(text, elementId, callback) {
     }
   }, 25);
 }
-
-// Bật / Tắt nhạc nền YouTube
 let musicOn = true;
 function toggleMusic() {
   const iframe = document.getElementById('youtube-player');
@@ -442,8 +378,6 @@ function toggleMusic() {
     musicOn = true;
   }
 }
-
-// Hiệu ứng hạt nền rơi
 const world = document.getElementById('world');
 const items = ['🌸', '💖', '✨', '🎀', '⭐', '💫', '💎', '🍀'];
 for (let i = 0; i < 35; i++) {
@@ -456,8 +390,6 @@ for (let i = 0; i < 35; i++) {
   el.style.animationDelay = (Math.random() * 5) + 's';
   world.appendChild(el);
 }
-
-// Dữ liệu nội dung 10 Stages tiếng Anh teencode
 const stages = [
   {
     num: "01", leftDeco: "✨", rightDeco: "🌸",
@@ -516,32 +448,23 @@ const stages = [
     credit: true
   }
 ];
-
 let currentStage = 0;
-
 function startGame() {
   playVictorySound();
   document.getElementById('start-screen').style.display = 'none';
   renderStage();
 }
-
 function renderStage() {
   const data = stages[currentStage];
   document.getElementById('stage-num').innerText = data.num;
-  
   const progressPercent = ((currentStage + 1) / stages.length) * 100;
   document.getElementById('progress-bar').style.width = progressPercent + '%';
-
   typeWriterEffect(data.text, 'dialog-text');
-
   document.getElementById('deco-left').innerText = data.leftDeco;
   document.getElementById('deco-right').innerText = data.rightDeco;
-  
   const displayArea = document.getElementById('display-area');
   const controls = document.getElementById('controls');
-  
   displayArea.innerHTML = data.content || '';
-
   if (data.question) {
     controls.innerHTML = `
       <button class="btn-arcade" onclick="answerQuestion(true)">TOTALLY AGREE! ♡</button>
@@ -574,7 +497,6 @@ function renderStage() {
     controls.innerHTML = `<button class="btn-arcade" onclick="nextStage()">NEXT [►]</button>`;
   }
 }
-
 function nextStage() {
   playBeep(500, 'square', 0.08);
   if (currentStage < stages.length - 1) {
@@ -582,7 +504,6 @@ function nextStage() {
     renderStage();
   }
 }
-
 function answerQuestion(isYes) {
   if(isYes) {
     playBeep(850, 'square', 0.12);
@@ -593,13 +514,11 @@ function answerQuestion(isYes) {
     typeWriterEffect("Nice try bestie, but lna locked this choice already! Pick the other button =)))", 'dialog-text');
   }
 }
-
 function replay() {
   playBeep(600, 'square', 0.1);
   currentStage = 0;
   renderStage();
 }
-
 document.body.addEventListener('click', function() {
   if (audioCtx.state === 'suspended') {
     audioCtx.resume();
